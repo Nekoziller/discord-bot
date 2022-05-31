@@ -1,5 +1,6 @@
 from utils import get_store
 from utils import embs
+import discord
 from discord import Interaction, app_commands
 from discord.ext import commands, tasks
 from discord.utils import MISSING
@@ -20,14 +21,12 @@ class Valorant(commands.Cog):
     async def hello(self, ctx):
         await ctx.send(f'Hello {ctx.author.display_name}.')
 
-    @commands.command(description="Shows your daily store in your accounts")
-    @commands.describe(username='Input username (without login)', password='password (without login)')
+    @app_commands.command(description="Shows your daily store in your accounts")
+    @app_commands.describe(username='Input username (without login)', password='password (without login)')
     # 関数の引数の説明文定義
     # @app_commands.guild_only() # サーバー内でコマンドを打った場合のみに適用
     async def store(self, interaction: Interaction, username: str = None, password: str = None) -> None:
         # language
-
-        response = ResponseLanguage(interaction.command.name, interaction.locale)
 
         # check if user is logged in
         is_private_message = True if username is not None or password is not None else False
@@ -35,11 +34,11 @@ class Valorant(commands.Cog):
         await interaction.response.defer(ephemeral=is_private_message)
 
         # get endpoint
-        getting = get_store()
-        await getting.auth(username,password)
-        puuid, data = getting.store()
+        getting = get_store.API()
+        await getting.set_auth(username,password)
+        data = await getting.store()
 
-        embeds = discord.Embed(title=f"Store Offers of {puuid}", color=discord.Colour.green())
+        embeds = discord.Embed(title="Store Offers", color=discord.Colour.green())
 
         await interaction.followup.send(embeds=embeds,
                                         view=embs.share_button(interaction, embeds) if is_private_message else MISSING)

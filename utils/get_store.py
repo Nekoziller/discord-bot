@@ -49,7 +49,7 @@ class API():
 
     def get_skin(self, uuid: str):
         '''Get Skin data'''
-        with open("cache" + ".json", "r", encoding='utf-8') as json_file:
+        with open("./utils" + "./" + "cache" + ".json", "r", encoding='utf-8') as json_file:
             tmp = json.load(json_file)
             try:
                 skindata = tmp
@@ -116,7 +116,7 @@ class API():
             #print(self.output)
         await self.session.close()
         print(store_data)
-        return self.puuid, store_data
+        return store_data
 
 if __name__ == '__main__':
     hoge = API()
