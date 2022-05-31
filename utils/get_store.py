@@ -18,8 +18,8 @@ payload = {
 
 data = {
     "type":"auth",
-    "username":"Nekoziller",
-    "password":"Kirito31415",
+    "username":"",
+    "password":"",
     "remember":"True",
     "language":"en-US"
 }
@@ -54,16 +54,25 @@ class API():
             try:
                 skindata = tmp
                 skin = skindata["skins"][uuid]
+                #print(skin)
             except KeyError:
                 raise RuntimeError('Some skin data is missing, plz use `/fix cache`')
         return skin
+
+    async def set_auth(self, username:str, password:str):
+        await self.post()
+        await self.put(username,password)
+        await self.entitlement()
+        await self.user()
 
     async def post(self):
         async with await self.session.post('https://auth.riotgames.com/api/v1/authorization', json=payload, headers=headers) as r:
             pass
         #print(response)
 
-    async def put(self):
+    async def put(self, username:str, password:str):
+        data['username'] = username
+        data['password'] = password
         async with self.session.put('https://auth.riotgames.com/api/v1/authorization', json=data, headers=headers) as r:
             self.output = await r.json()
             #print(output)
@@ -95,20 +104,21 @@ class API():
         headers = {'X-Riot-Entitlements-JWT': f'{self.entitlements_token}', 'Authorization': f'Bearer {self.access_token}'}
         async with self.session.get(f'https://pd.ap.a.pvp.net/store/v2/storefront/{self.puuid}', headers=headers, json={}) as r:
             self.output = await r.json()
-
+            store_data = {}
             for f in self.output["SkinsPanelLayout"]["SingleItemOffers"]:
                 self.uuid = f
                 tmp = self.get_skin(self.uuid)
                 name_store = tmp['names']['ja-JP']
+                image_store = tmp['icon']
+                store_data[name_store] = image_store
                 print(name_store)
+                print(image_store)
             #print(self.output)
         await self.session.close()
-
+        print(store_data)
+        return self.puuid, store_data
 
 if __name__ == '__main__':
     hoge = API()
-    asyncio.get_event_loop().run_until_complete(hoge.post())
-    asyncio.get_event_loop().run_until_complete(hoge.put())
-    asyncio.get_event_loop().run_until_complete(hoge.entitlement())
-    asyncio.get_event_loop().run_until_complete(hoge.user())
+    asyncio.get_event_loop().run_until_complete(hoge.set_auth("Nekoziller","Kirito31415"))
     asyncio.get_event_loop().run_until_complete(hoge.store())

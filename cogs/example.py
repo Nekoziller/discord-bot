@@ -1,5 +1,10 @@
-import discord
-from discord.ext import commands
+from utils import get_store
+from utils import embs
+from discord import Interaction, app_commands
+from discord.ext import commands, tasks
+from discord.utils import MISSING
+
+
 
 class Valorant(commands.Cog):
     def __init__(self, bot):
@@ -10,17 +15,6 @@ class Valorant(commands.Cog):
     async def on_ready(self):
         await print('GreetingsCog on ready!')
 
-    async def get_endpoint(self, user_id: int, username: str = None,
-                           password: str = None) -> API_ENDPOINT:
-        if username is not None and password is not None:
-            auth = self.db.auth
-            data = await auth.temp_auth(username, password)
-        elif username or password:
-            raise RuntimeError(f"Please provide both username and password!")
-
-        endpoint = self.endpoint
-        await endpoint.activate(data)
-        return endpoint
 
     @commands.command()
     async def hello(self, ctx):
@@ -41,19 +35,20 @@ class Valorant(commands.Cog):
         await interaction.response.defer(ephemeral=is_private_message)
 
         # get endpoint
-        endpoint = await self.get_endpoint(interaction.user.id, interaction.locale, username, password)
+        getting = get_store()
+        await getting.auth(username,password)
+        puuid, data = getting.store()
 
-        # fetch skin price
-        skin_price = await endpoint.store_fetch_offers()
-        self.db.insert_skin_price(skin_price)
-
-        # data
-        data = await endpoint.store_fetch_storefront()
-        embeds = Generate_Embed.store(endpoint.player, data, language, response, self.bot)
+        embeds = discord.Embed(title=f"Store Offers of {puuid}", color=discord.Colour.green())
 
         await interaction.followup.send(embeds=embeds,
-                                        view=share_button(interaction, embeds) if is_private_message else MISSING)
+                                        view=embs.share_button(interaction, embeds) if is_private_message else MISSING)
 
+        for name, url in data:
+            embeds = discord.Embed(title=name, color=discord.Colour.green())
+            embeds.set_thumbnail(url=url)
+            await interaction.followup.send(embeds=embeds,
+                                            view=embs.share_button(interaction, embeds) if is_private_message else MISSING)
 
 async def setup(bot):
     await bot.add_cog(Valorant(bot))
