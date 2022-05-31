@@ -111,14 +111,14 @@ class API():
                 name_store = tmp['names']['ja-JP']
                 image_store = tmp['icon']
                 store_data[name_store] = image_store
-                print(name_store)
-                print(image_store)
+                #print(name_store)
+                #print(image_store)
             #print(self.output)
         await self.session.close()
-        print(store_data)
+        #print(store_data)
         return store_data
 
 if __name__ == '__main__':
     hoge = API()
-    asyncio.get_event_loop().run_until_complete(hoge.set_auth("Nekoziller","Kirito31415"))
+    asyncio.get_event_loop().run_until_complete(hoge.set_auth("username","password"))
     asyncio.get_event_loop().run_until_complete(hoge.store())

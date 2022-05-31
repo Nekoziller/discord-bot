@@ -4,6 +4,12 @@ from discord import Interaction, TextStyle, ui, ButtonStyle
 from typing import List
 
 
+def get_emb(name:str, url:str):
+    embeds = discord.Embed(title=name, color=discord.Colour.green())
+    embeds.set_thumbnail(url=url)
+    return embeds
+
+
 class share_button(ui.View):
     def __init__(self, interaction: Interaction, embeds: List[discord.Embed]):
         self.interaction: Interaction = interaction

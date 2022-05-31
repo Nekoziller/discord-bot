@@ -38,16 +38,13 @@ class Valorant(commands.Cog):
         await getting.set_auth(username,password)
         data = await getting.store()
 
-        embeds = discord.Embed(title="Store Offers", color=discord.Colour.green())
+        embeds = discord.Embed(title=f"Store Offers of {username}", color=discord.Colour.green())
+        embeds = [embeds]
+        [embeds.append(embs.get_emb(name, url)) for name, url in data.items()]
+        #print(embeds)
 
         await interaction.followup.send(embeds=embeds,
                                         view=embs.share_button(interaction, embeds) if is_private_message else MISSING)
-
-        for name, url in data:
-            embeds = discord.Embed(title=name, color=discord.Colour.green())
-            embeds.set_thumbnail(url=url)
-            await interaction.followup.send(embeds=embeds,
-                                            view=embs.share_button(interaction, embeds) if is_private_message else MISSING)
 
 async def setup(bot):
     await bot.add_cog(Valorant(bot))
