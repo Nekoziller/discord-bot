@@ -1,6 +1,5 @@
 import discord
 import os
-import json
 from discord.ext import commands
 import asyncio
 from dotenv import load_dotenv
@@ -8,13 +7,14 @@ from dotenv import load_dotenv
 load_dotenv()
 
 intents = discord.Intents.all()
+
 INITIAL_EXTENSIONS = [
      'cogs.example'
  ]
 
 class Discord_bot(commands.Bot):
     def __init__(self, *args, **kwargs):
-        super().__init__(command_prefix="!", case_insensitive=True, intents=intents)
+        super().__init__(command_prefix="/", case_insensitive=True, intents=intents)
 
     async def on_ready(self):
         for cog in INITIAL_EXTENSIONS:
