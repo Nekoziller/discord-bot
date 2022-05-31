@@ -13,13 +13,22 @@ INITIAL_EXTENSIONS = [
  ]
 
 class Discord_bot(commands.Bot):
+
+    bot_app_info: discord.AppInfo
+
     def __init__(self, *args, **kwargs):
-        super().__init__(command_prefix="/", case_insensitive=True, intents=intents)
+        super().__init__(command_prefix="-", case_insensitive=True, intents=intents)
 
     async def on_ready(self):
+        await self.tree.sync()
         for cog in INITIAL_EXTENSIONS:
             await bot.load_extension(cog)
         print(f'{bot.user} is Ready')
+
+    async def setup_hook(self) -> None:
+        await self.tree.sync(guild=discord.Object(ig=(os.getenv('SERVER_ID'))))
+        self.bot_app_info = await self.application_info()
+        self.owner_id = self.bot_app_info.owner.id
 
     async def start(self):
         return await super().start(os.getenv('TOKEN'), reconnect=True)
