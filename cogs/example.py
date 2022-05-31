@@ -4,6 +4,7 @@ import discord
 from discord import Interaction, app_commands
 from discord.ext import commands, tasks
 from discord.utils import MISSING
+from discord_slash import SlashCommand, SlashContext
 
 class Valorant(commands.Cog):
     def __init__(self, bot):
@@ -12,6 +13,7 @@ class Valorant(commands.Cog):
     @commands.Cog.listener()
     # Cogが読み込まれた時に発動
     async def on_ready(self):
+        await self.tree.sync()
         await print('GreetingsCog on ready!')
 
 
