@@ -26,7 +26,7 @@ class Discord_bot(commands.Bot):
         print(f'{bot.user} is Ready')
 
     async def setup_hook(self) -> None:
-        await self.tree.sync(guild=discord.Object(ig=(os.getenv('SERVER_ID'))))
+        await self.tree.sync(guild=discord.Object(id=(os.getenv('SERVER_ID'))))
         self.bot_app_info = await self.application_info()
         self.owner_id = self.bot_app_info.owner.id
 
