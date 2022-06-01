@@ -26,9 +26,9 @@ class Valorant(commands.Cog):
 
 
     @app_commands.command(description="Shows your daily store in your accounts")
-    @app_commands.describe(username='Input username (without login)', password='password (without login)')
+    @app_commands.describe(username='Input username', password='Input password')
     # 関数の引数の説明文定義
-    @app_commands.guild_only() # サーバー内でコマンドを打った場合のみに適用
+    @app_commands.guild_only()  # サーバー内でコマンドを打った場合のみに適用
     async def store(self, interaction: Interaction, username: str = None, password: str = None) -> None:
         # language
 
@@ -48,6 +48,10 @@ class Valorant(commands.Cog):
         #print(embeds)
 
         await interaction.followup.send(embeds=embeds, view=embs.share_button(interaction, embeds) if is_private_message else MISSING)
+
+
+    async def reset(self, interaction: Interaction) -> None:
+        await self.session.close()
 
 async def setup(bot):
     await bot.add_cog(Valorant(bot))

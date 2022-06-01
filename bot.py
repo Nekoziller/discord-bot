@@ -30,7 +30,6 @@ class Discord_bot(commands.Bot):
 
     async def setup_hook(self) -> None:
         self.session = aiohttp.ClientSession()
-        print('setup_hook')
         self.bot_app_info = await self.application_info()
         self.owner_id = self.bot_app_info.owner.id
 
