@@ -24,11 +24,6 @@ class Valorant(commands.Cog):
     async def hello(self, ctx):
         await ctx.send(f'Hello {ctx.author.display_name}.')
 
-    @commands.command()
-    async def reset(self, ctx) -> None:
-        await self.session.close()
-        await ctx.send(f'Reseted by {ctx.author.display_name}.')
-
 
     @app_commands.command(description="Shows your daily store in your accounts")
     @app_commands.describe(username='Input username', password='Input password')
