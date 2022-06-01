@@ -49,7 +49,7 @@ class API():
 
     def get_skin(self, uuid: str):
         '''Get Skin data'''
-        with open("./utils" + "./" + "cache" + ".json", "r", encoding='utf-8') as json_file:
+        with open("./utils/" + "cache" + ".json", "r", encoding='utf-8') as json_file:
             tmp = json.load(json_file)
             try:
                 skindata = tmp
