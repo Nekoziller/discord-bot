@@ -24,6 +24,10 @@ class Valorant(commands.Cog):
     async def hello(self, ctx):
         await ctx.send(f'Hello {ctx.author.display_name}.')
 
+    @commands.command()
+    async def reset(self) -> None:
+        await self.session.close()
+
 
     @app_commands.command(description="Shows your daily store in your accounts")
     @app_commands.describe(username='Input username', password='Input password')
@@ -49,9 +53,6 @@ class Valorant(commands.Cog):
 
         await interaction.followup.send(embeds=embeds, view=embs.share_button(interaction, embeds) if is_private_message else MISSING)
 
-
-    async def reset(self, interaction: Interaction) -> None:
-        await self.session.close()
 
 async def setup(bot):
     await bot.add_cog(Valorant(bot))
