@@ -1,23 +1,26 @@
+from __future__ import annotations
+
 from utils import get_store
 from utils import embs
 import discord
 from discord import Interaction, app_commands
 from discord.ext import commands, tasks
 from discord.utils import MISSING
+from bot import Discord_bot
+
 
 
 class Valorant(commands.Cog):
     def __init__(self, bot):
-        self.bot = bot
+        self.bot : Discord_bot = bot
         super().__init__()  # this is now required in this context.
 
     @commands.Cog.listener()
-    # Cogが読み込まれた時に発動
     async def on_ready(self):
         await print('GreetingsCog on ready!')
 
 
-    @app_commands.command()
+    @commands.command()
     async def hello(self, ctx):
         await ctx.send(f'Hello {ctx.author.display_name}.')
 
@@ -25,7 +28,7 @@ class Valorant(commands.Cog):
     @app_commands.command(description="Shows your daily store in your accounts")
     @app_commands.describe(username='Input username (without login)', password='password (without login)')
     # 関数の引数の説明文定義
-    # @app_commands.guild_only() # サーバー内でコマンドを打った場合のみに適用
+    @app_commands.guild_only() # サーバー内でコマンドを打った場合のみに適用
     async def store(self, interaction: Interaction, username: str = None, password: str = None) -> None:
         # language
 
@@ -44,8 +47,7 @@ class Valorant(commands.Cog):
         [embeds.append(embs.get_emb(name, url)) for name, url in data.items()]
         #print(embeds)
 
-        await interaction.followup.send(embeds=embeds,
-                                        view=embs.share_button(interaction, embeds) if is_private_message else MISSING)
+        await interaction.followup.send(embeds=embeds, view=embs.share_button(interaction, embeds) if is_private_message else MISSING)
 
 async def setup(bot):
     await bot.add_cog(Valorant(bot))

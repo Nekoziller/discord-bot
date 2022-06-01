@@ -8,7 +8,8 @@ import aiohttp
 
 load_dotenv()
 
-intents = discord.Intents.all()
+intents = discord.Intents.default()
+intents.message_content = True
 
 INITIAL_EXTENSIONS = [
      'cogs.example'
@@ -23,20 +24,22 @@ class Discord_bot(commands.Bot):
 
     async def on_ready(self):
         for cog in INITIAL_EXTENSIONS:
-            await bot.load_extension(cog)
-        print(f'{bot.user} is Ready')
+            await self.load_extension(cog)
+        await self.tree.sync()
+        print(f'{self.user} is Ready')
 
     async def setup_hook(self) -> None:
         self.session = aiohttp.ClientSession()
-        await self.tree.sync(guild=discord.Object(id=(os.getenv('SERVER_ID'))))
+        print('setup_hook')
         self.bot_app_info = await self.application_info()
         self.owner_id = self.bot_app_info.owner.id
 
     async def start(self):
         return await super().start(os.getenv('TOKEN'), reconnect=True)
 
-
-
-if __name__ == "__main__":
+def run_bot():
     bot = Discord_bot()
     asyncio.run(bot.start())
+
+if __name__ == '__main__':
+    run_bot()
