@@ -25,8 +25,7 @@ data = {
     "language":"en-US"
 }
 
-headers = {'Content-Type':'application/json',
-           'User-agent':'RiotClient/43.0.1.4195386.4190634 rso-auth (Windows;10;;Professional, x64'}
+headers = {'Content-Type':'application/json'}
 
 #response = requests.request("POST", url, data=payload, headers=headers)
 
@@ -75,7 +74,7 @@ class API():
         data['username'] = username
         data['password'] = password
         async with self.session.put('https://auth.riotgames.com/api/v1/authorization', json=data, headers=headers) as r:
-            self.output = await r.json(content_type=None)
+            self.output = await r.json()
             #print(output)
             #print(response.cookies)
             #print(response.cookies.items())
