@@ -4,6 +4,7 @@ import requests
 import aiohttp
 import asyncio
 import re
+from logging import getLogger
 
 
 url = "https://auth.riotgames.com/api/v1/authorization"
@@ -74,7 +75,7 @@ class API():
         data['username'] = username
         data['password'] = password
         async with self.session.put('https://auth.riotgames.com/api/v1/authorization', json=data, headers=headers) as r:
-            self.output = await r.json()
+            self.output = await r.json(content_type=None)
             #print(output)
             #print(response.cookies)
             #print(response.cookies.items())
@@ -82,7 +83,7 @@ class API():
                 self.cookies['cookie'][cookie[0]] = str(cookie).split('=')[1].split(';')[0]
         #print(self.cookies['cookie'])
 
-        response = self._extract_tokens(self.output)
+            response = self._extract_tokens(self.output)
         self.access_token = response[0]
 
     async def entitlement(self):
@@ -119,6 +120,7 @@ class API():
         return store_data
 
 if __name__ == '__main__':
+    logger = getLogger(__name__)
     hoge = API()
     asyncio.get_event_loop().run_until_complete(hoge.set_auth("username","password"))
     asyncio.get_event_loop().run_until_complete(hoge.store())
