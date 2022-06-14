@@ -74,13 +74,13 @@ class API():
         data['username'] = username
         data['password'] = password
         async with self.session.put('https://auth.riotgames.com/api/v1/authorization', json=data, headers=headers) as r:
-            self.output = await r.json()
-            #print(output)
-            #print(response.cookies)
-            #print(response.cookies.items())
+            try:
+                self.output = await json.loads(r.text)
+
+            except TypeError:
+                print(r)
             for cookie in r.cookies.items():
                 self.cookies['cookie'][cookie[0]] = str(cookie).split('=')[1].split(';')[0]
-        #print(self.cookies['cookie'])
 
             response = self._extract_tokens(self.output)
         self.access_token = response[0]
